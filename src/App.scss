@@ -1,0 +1,17 @@
+@import '~bootstrap/scss/bootstrap';
+
+.App {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+
+.main {
+    flex-grow: 1;
+    display: flex;
+}
+
+.center-container {
+    height: 100%;
+    display: flex;
+}
