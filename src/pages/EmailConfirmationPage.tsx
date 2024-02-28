@@ -5,81 +5,78 @@ import { useAuth } from '../context/AuthContext'
 import { getErrorMessage } from '../utils/getErrorMessage';
 
 const EmailConfirmationPage = () => {
-    const { type } = useParams();
-    console.log(type);
-    const [searchParams] = useSearchParams();
-    const token = searchParams.get('token');
-    const id = searchParams.get('id');
-    const newEmail = searchParams.get('email');
+  const { type } = useParams();
+  const [searchParams] = useSearchParams();
+  const token = searchParams.get('token') || '';
+  const id = searchParams.get('id') || '';
+  const newEmail = searchParams.get('email') || '';
 
-    const { activate, changeEmail, confirmReset } = useAuth();
+  const { activate, changeEmail, confirmReset } = useAuth();
 
-    const [isConfirmed, setIsConfirmed] = useState(false);
-    const [isChecking, setIsChecking] = useState(true);
-    const [confirmationErr, setConfirmationErr] = useState('');
+  const [isChecking, setIsChecking] = useState(true);
+  const [error, setError] = useState('');
 
-    const navigate = useNavigate();
+  const navigate = useNavigate();
 
-    useEffect(() => {
-        switch(type) {
-            case 'activate':
-                if (token && id) {
-                    activate(token, id)
-                        .then(() => navigate('/profile'))
-                        .catch((e) => setConfirmationErr(getErrorMessage(e)))
-                }
-                break;
-            case 'reset-password':
-                if (token && id) {
-                    confirmReset(token, id)
-                        .then(() => navigate('/reset-password'))
-                        .catch((e) => setConfirmationErr(getErrorMessage(e)))
-                }
-                break;
-            case 'change-email':
-                if (token && id && newEmail) {
-                    changeEmail(token, id, newEmail)
-                        .then(() => navigate('/profile'))
-                        .catch((e) => setConfirmationErr(getErrorMessage(e)))
-                }
-                break;
-            default:
-                setIsConfirmed(false);
+  useEffect(() => {
+    switch(type) {
+      case 'activate':
+        if (token && id) {
+          activate(token, id)
+            .then(() => navigate('/profile', { replace: true }))
+            .catch((e) => setError(getErrorMessage(e)))
         }
-
-        setIsChecking(false);
-    }, []);
-
-    if (!token || !id) {
-        return (
-            <Alert variant="danger">
-                <Alert.Heading>Not authorized</Alert.Heading>
-                <p>You have not confirmed your email</p>
-            </Alert>
-        )
+        break;
+      case 'reset-password':
+        if (token && id) {
+          confirmReset(token, id)
+            .then((email) => navigate(`/reset-password/${email}`, { replace: true }))
+            .catch((e) => setError(getErrorMessage(e)))
+        }
+        break;
+      case 'change-email':
+        if (token && id && newEmail) {
+          changeEmail(token, id, newEmail)
+            .then(() => navigate('/profile', { replace: true }))
+            .catch(e => setError(getErrorMessage(e)))
+        }
+        break;
+      default:
+        break;
     }
 
-    if (token && id && isChecking) {
-        return (
-            <Spinner animation="border" variant="primary" />
-        );
-    }
+    setIsChecking(false);
+  }, []);
+
+  if (!token || !id) {
+    return (
+      <Alert variant="danger" className="d-grid gap-2 col-lg-4 col-sm-auto m-auto text-center">
+        <Alert.Heading>Not authorized</Alert.Heading>
+        <p>You have not confirmed your email</p>
+      </Alert>
+    )
+  }
+
+  if (isChecking) {
+    return (
+      <div className="d-flex justify-content-center mt-3">
+        <Spinner animation="border" variant="secondary"/>
+      </div>
+    );
+  }
 
   return (
     <>
-        {!isConfirmed && (
-            <Alert variant="danger">
-                <Alert.Heading>Failed confirmation</Alert.Heading>
-                <p>
-                    The process of your email confirmation has failed.
-                </p>
-                {!!confirmationErr && (
-                    <p>
-                        {`Reason: ${confirmationErr}`}
-                    </p>
-                )}
-            </Alert>
-        )}
+      {!!error && (
+        <Alert variant="danger" className="d-grid gap-2 col-lg-4 col-sm-auto m-auto">
+          <Alert.Heading>Failed confirmation</Alert.Heading>
+          <p>
+            The process of your email confirmation has failed.
+            <br />
+            {`Reason: ${error}`}
+          </p>
+        </Alert>
+      )}
     </>
   )
 }

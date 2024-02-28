@@ -3,7 +3,7 @@ import Container from 'react-bootstrap/Container';
 import Nav from 'react-bootstrap/Nav';
 import Navbar from 'react-bootstrap/Navbar';
 import Button from 'react-bootstrap/Button';
-import { NavLink, Outlet, useNavigate  } from 'react-router-dom';
+import { NavLink, Outlet, useLocation, useNavigate  } from 'react-router-dom';
 import { useAuth } from './context/AuthContext';
 import ErrorAlert from './components/ErrorAlert';
 import { getErrorMessage } from './utils/getErrorMessage';
@@ -14,6 +14,7 @@ function App() {
   const [logoutError, setLogoutError] = useState('');
 
   const navigate = useNavigate();
+  const location = useLocation();
 
   const onLogout = async() => {
     setLogoutError('');
@@ -28,13 +29,13 @@ function App() {
 
   return (
     <div className="App">
-      <header>
-        <Navbar expand="md" bg="primary" data-bs-theme="dark" sticky="top">
+      <header className="position-sticky top-0 start-0 end-0">
+        <Navbar expand="md" bg="primary" data-bs-theme="dark">
           <Container>
             <Navbar.Brand as={NavLink} to="/">
-                React Auth App
+              Accounting App
             </Navbar.Brand>
-            
+
             <Navbar.Toggle aria-controls="navbar" />
             <Navbar.Collapse id="navbar">
               <Nav className="me-auto">
@@ -43,8 +44,8 @@ function App() {
               </Nav>
 
               {isAuthorized && (
-                <Button 
-                  type="button" 
+                <Button
+                  type="button"
                   onClick={onLogout}
                   variant="outline-light"
                 >
@@ -54,6 +55,17 @@ function App() {
             </Navbar.Collapse>
           </Container>
         </Navbar>
+
+        {location.pathname.startsWith('/profile') && (
+          <Navbar expand="md" bg="primary-subtle"className="py-0">
+            <Container>
+              <Nav className="me-auto flex-row gap-3">
+                <Nav.Link as={NavLink} to="profile/expenses">Expenses</Nav.Link>
+                <Nav.Link as={NavLink} to="profile/categories">Categories</Nav.Link>
+              </Nav>
+            </Container>
+          </Navbar>
+        )}
       </header>
 
       {!!logoutError && (<ErrorAlert message={logoutError} />)}

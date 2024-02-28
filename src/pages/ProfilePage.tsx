@@ -1,55 +1,62 @@
-import React, { useState } from 'react'
-import { Button, Stack } from 'react-bootstrap';
+import React, { useEffect, useState } from 'react'
+import { Button, Spinner } from 'react-bootstrap';
 import { useAuth } from '../context/AuthContext'
-import ChangeEmailModal from '../components/Modals/ChangeEmailModal';
-import ChangeNameModal from '../components/Modals/ChangeNameModal';
-import ChangePassModal from '../components/Modals/ChangePassModal';
+import ProfileEditForm from '../components/ProfileEditForm';
+import { useExpense } from '../context/ExpenseContext';
+import { getErrorMessage } from '../utils/getErrorMessage';
+import { usePageError } from '../hooks/usePageError';
+import ErrorAlert from '../components/ErrorAlert';
+import { Outlet } from 'react-router-dom';
 
 const ProfilePage = () => {
-    const { user } = useAuth();
+  const { user } = useAuth()!;
+  const { getAllCategories, getAllExpenses } = useExpense();
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = usePageError('');
 
-    const [isNameChanging, setIsNameChanging] = useState(false);
-    const [isEmailChanging, setIsEmailChanging] = useState(false);
-    const [isPassChanging, setIsPassChanging] = useState(false);
+  const [isEdit, setIsEdit] = useState(false);
+
+  useEffect(() => {
+    getAllCategories(user!.id)
+      .catch(err => setError(getErrorMessage(err)))
+  }, []);
+
+  useEffect(() => {
+    getAllExpenses(user!.id)
+      .then(() => setIsLoading(false))
+      .catch(err => setError(getErrorMessage(err)));
+  }, [])
 
   return (
-    <section>
-        <h1>Profile</h1>
+    <section className="pt-4 w-100 mb-5">
+      <div className="d-flex justify-content-between flex-wrap flex-sm-nowrap">
+        <div>
+          <h1>{user?.username}</h1>
+          <h5 className="text-secondary">{user?.email}</h5>
+        </div>
 
-        <Stack gap={3}>
-            <div>
-                <p>Username:</p>
-                {user?.username}
-                <Button 
-                    variant="outline-primary"
-                    onClick={() => setIsNameChanging(true)}
-                >
-                    Change username
-                </Button>
-            </div>
-            <div>
-                <p>Email:</p>
-                {user?.email}
-                <Button 
-                    variant="outline-primary"
-                    onClick={() => setIsEmailChanging(true)}
-                >
-                    Change email
-                </Button>
-            </div>
-            <div>
-                <Button 
-                    variant="outline-primary"
-                    onClick={() => setIsPassChanging(true)}
-                >
-                    Change password
-                </Button>
-            </div>
-        </Stack>
+        <Button
+          variant="outline-primary"
+          className="align-self-center"
+          onClick={() => setIsEdit(true)}
+        >
+          Edit profile
+        </Button>
+      </div>
 
-        <ChangeNameModal isModalOpen={isNameChanging} setIsModalOpen={setIsNameChanging} />
-        <ChangeEmailModal isModalOpen={isEmailChanging} setIsModalOpen={setIsEmailChanging} />
-        <ChangePassModal isModalOpen={isPassChanging} setIsModalOpen={setIsPassChanging} />
+      <hr />
+
+      {isLoading ? (
+        <div className="d-flex justify-content-center mt-3">
+          <Spinner animation="border" variant="secondary"/>
+        </div>
+      ) : (
+        <Outlet />
+      )}
+
+      {!!error && (<ErrorAlert message={error} />)}
+      
+      <ProfileEditForm show={isEdit} setShow={setIsEdit} />
     </section>
   )
 }
