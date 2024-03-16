@@ -21,7 +21,7 @@ const ExpensesPage = () => {
       sort: sortParam,
       filters,
     });
-  }, [queryParam, sortParam, filters]);
+  }, [queryParam, sortParam, filters, expenses]);
 
   return (
     <div>
@@ -38,7 +38,7 @@ const ExpensesPage = () => {
 
       <ExpenseFilters />
 
-      <div className="d-flex justify-content-between">
+      <div className="d-flex flex-column-reverse flex-sm-row justify-content-between">
         {expenses.length ? (
           <>
             {((queryParam || filters.length) && !displayedExpenses.length) ? (

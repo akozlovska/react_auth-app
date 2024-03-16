@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { Button, Spinner } from 'react-bootstrap';
+import { Button } from 'react-bootstrap';
 import { useAuth } from '../context/AuthContext'
 import ProfileEditForm from '../components/ProfileEditForm';
 import { useExpense } from '../context/ExpenseContext';
@@ -11,19 +11,17 @@ import { Outlet } from 'react-router-dom';
 const ProfilePage = () => {
   const { user } = useAuth()!;
   const { getAllCategories, getAllExpenses } = useExpense();
-  const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = usePageError('');
 
   const [isEdit, setIsEdit] = useState(false);
 
   useEffect(() => {
-    getAllCategories(user!.id)
+    getAllCategories()
       .catch(err => setError(getErrorMessage(err)))
   }, []);
 
   useEffect(() => {
-    getAllExpenses(user!.id)
-      .then(() => setIsLoading(false))
+    getAllExpenses()
       .catch(err => setError(getErrorMessage(err)));
   }, [])
 
@@ -46,16 +44,10 @@ const ProfilePage = () => {
 
       <hr />
 
-      {isLoading ? (
-        <div className="d-flex justify-content-center mt-3">
-          <Spinner animation="border" variant="secondary"/>
-        </div>
-      ) : (
-        <Outlet />
-      )}
+      <Outlet />
 
       {!!error && (<ErrorAlert message={error} />)}
-      
+
       <ProfileEditForm show={isEdit} setShow={setIsEdit} />
     </section>
   )

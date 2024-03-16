@@ -16,6 +16,7 @@ import { ExpenseProvider } from './context/ExpenseContext';
 import NonAuthorizedRoutes from './components/Routes/NonAuthorizedRoutes';
 import ExpensesPage from './pages/ExpensesPage';
 import CategoriesPage from './pages/CategoriesPage';
+import AuthCallback from './pages/AuthCallback';
 
 const root = ReactDOM.createRoot(
   document.getElementById('root') as HTMLElement
@@ -53,6 +54,11 @@ const router = createBrowserRouter([
             path: 'confirmation/:type',
             element: <EmailConfirmationPage />
           },
+
+          {
+            path: 'auth-callback',
+            element: <AuthCallback />
+          }
         ],
       },
 

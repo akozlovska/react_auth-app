@@ -7,7 +7,7 @@ type Props = {
 
 const ErrorAlert: React.FC<Props> = ({ message }) => {
   return (
-    <Alert variant="danger" className="text-center">
+    <Alert variant="danger" className="text-center mb-3">
       {message}
     </Alert>
   )

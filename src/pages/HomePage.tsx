@@ -6,18 +6,22 @@ const HomePage = () => {
   const { isAuthorized } = useAuth();
 
   return (
-    <section className="text-center d-grid gap-2 col-lg-6 col-md-auto m-auto">
-      <h1 className="mb-2 text-primary fw-bold fs-1">
+    <section className="text-center d-grid gap-2 col-lg-8 col-10 m-auto">
+      <h1 className="mb-5 display-1">
         Welcome to the Accounting App
       </h1>
 
       {!isAuthorized && (
-        <div className="w-50 mx-auto">
-          <h3 className="mb-2  text-primary-emphasis">Please, sign in to continue</h3>
-          <NavLink to="/login" className="mx-auto mb-3 btn btn-primary">Sign In</NavLink>
-          <hr className="m-0 mb-2" />
-          <p className="mb-2 fs-5 text-secondary">Here for the first time?</p>
-          <NavLink to="/register" className="mx-auto btn btn-secondary">Sign Up</NavLink>
+        <div className="mx-auto row w-75">
+          <div className="col">
+            <p className="mb-3 fs-5">Sign in to continue</p>
+            <NavLink to="/login" className="mx-auto btn btn-primary">Sign In</NavLink>
+          </div>
+          <div className="vr p-0 mx-3 d-none d-sm-block"></div>
+          <div className="col">
+            <p className="mb-3 fs-5">Here for the first time?</p>
+            <NavLink to="/register" className="mx-auto btn btn-secondary">Sign Up</NavLink>
+          </div>
         </div>
       )}
     </section>

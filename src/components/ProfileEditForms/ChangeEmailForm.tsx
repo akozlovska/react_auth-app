@@ -10,15 +10,16 @@ import { getErrorMessage } from '../../utils/getErrorMessage';
 import { usePageError } from '../../hooks/usePageError';
 
 type NewEmailSubmit = {
-  password: string,
+  password?: string,
   newEmail: string,
 };
 
 type Props = {
   setActiveKey: (k: string | null) => void;
+  isPassRequired: boolean;
 }
 
-const ChangeEmailForm: React.FC<Props> = ({ setActiveKey }) => {
+const ChangeEmailForm: React.FC<Props> = ({ setActiveKey, isPassRequired }) => {
   const {
     handleSubmit,
     control,
@@ -78,10 +79,12 @@ const ChangeEmailForm: React.FC<Props> = ({ setActiveKey }) => {
       ) : (
         <>
           <Form onSubmit={handleSubmit(onEmailChange)}>
-            <Form.Group controlId="password" className="mb-3">
-              <Form.Label>Your password</Form.Label>
-              <PasswordInput control={control} errors={errors} clearErrors={clearErrors} />
-            </Form.Group>
+            {isPassRequired && (
+              <Form.Group controlId="password" className="mb-3">
+                <Form.Label>Your password</Form.Label>
+                <PasswordInput control={control} errors={errors} clearErrors={clearErrors} />
+              </Form.Group>
+            )}
 
             <Form.Group controlId="newEmail" className="mb-3">
               <Form.Label>New email</Form.Label>

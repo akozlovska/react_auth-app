@@ -13,14 +13,14 @@ type FilterParameters = {
 
 type ExpenseContextType = {
   expenses: Expense[];
-  getAllExpenses: (userId: string) => Promise<void>;
+  getAllExpenses: () => Promise<void>;
   addExpense: (data: ExpensePostData) => Promise<void>;
   deleteExpense: (expenseId: string) => Promise<void>;
   changeExpense: (id: string, data: ExpensePatchData) => Promise<void>;
   filterAndSort: (parameters: FilterParameters) => Expense[];
   categories: Category[];
-  getAllCategories: (userId: string) => Promise<void>;
-  addCategory: (userId: string, name: string) => Promise<void>;
+  getAllCategories: () => Promise<void>;
+  addCategory: (name: string) => Promise<void>;
   changeCategory: (id: number, newName: string) => Promise<void>;
   deleteCategory: (categoryId: number) => Promise<void>;
 }
@@ -35,14 +35,18 @@ export const ExpenseProvider: React.FC<Props> = ( { children }) => {
   const [expenses, setExpenses] = useState<Expense[]>([]);
   const [categories, setCategories] = useState<Category[]>([]);
 
-  const getAllExpenses = async(userId: string) => {
-    const expenses = await expenseService.getAll(userId);
+  const getAllExpenses = async() => {
+    const expenses = await expenseService.getAll();
     setExpenses(expenses);
   }
 
   const addExpense = async(data: ExpensePostData) => {
     const newExpense = await expenseService.addOne(data);
     setExpenses(curr => [ ...curr, newExpense ]);
+
+    if (!categories.find(category => category.name === newExpense.category)) {
+      await getAllCategories();
+    }
   }
 
   const deleteExpense = async(expenseId: string) => {
@@ -62,6 +66,10 @@ export const ExpenseProvider: React.FC<Props> = ( { children }) => {
 
       return updatedExpenses;
     });
+
+    if (!categories.find(category => category.name === updatedExpense.category)) {
+      await getAllCategories();
+    }
   }
 
   const filterAndSort = ({ query, sort, filters }: FilterParameters) => {
@@ -111,13 +119,13 @@ export const ExpenseProvider: React.FC<Props> = ( { children }) => {
     return filtered;
   }
 
-  const getAllCategories = async(userId: string) => {
-    const categories = await categoryService.getAllByUser(userId);
+  const getAllCategories = async() => {
+    const categories = await categoryService.getAllByUser();
     setCategories(categories);
   }
 
-  const addCategory = async(userId: string, name: string) => {
-    const newCategory = await categoryService.addOne(userId, name);
+  const addCategory = async(name: string) => {
+    const newCategory = await categoryService.addOne(name);
     setCategories(curr => [ ...curr, newCategory ]);
   }
 

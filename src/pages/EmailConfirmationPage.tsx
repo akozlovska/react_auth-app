@@ -50,7 +50,7 @@ const EmailConfirmationPage = () => {
 
   if (!token || !id) {
     return (
-      <Alert variant="danger" className="d-grid gap-2 col-lg-4 col-sm-auto m-auto text-center">
+      <Alert variant="danger" className="d-grid gap-2 col-lg-6 col-10 m-auto text-center">
         <Alert.Heading>Not authorized</Alert.Heading>
         <p>You have not confirmed your email</p>
       </Alert>
@@ -65,19 +65,21 @@ const EmailConfirmationPage = () => {
     );
   }
 
+  if (error) {
+    return (
+      <Alert variant="danger" className="d-grid gap-2 col-lg-6 col-10 m-auto">
+        <Alert.Heading>Failed confirmation</Alert.Heading>
+        <p>
+          The process of your email confirmation has failed.
+          <br />
+          {`Reason: ${error}`}
+        </p>
+      </Alert>
+    );
+  }
+
   return (
-    <>
-      {!!error && (
-        <Alert variant="danger" className="d-grid gap-2 col-lg-4 col-sm-auto m-auto">
-          <Alert.Heading>Failed confirmation</Alert.Heading>
-          <p>
-            The process of your email confirmation has failed.
-            <br />
-            {`Reason: ${error}`}
-          </p>
-        </Alert>
-      )}
-    </>
+    <></>
   )
 }
 

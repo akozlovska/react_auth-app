@@ -1,12 +1,12 @@
 import { Category } from "../../types/Category";
 import { httpClient } from "../httpClient"
 
-export const getAllByUser = (userId: string) => {
-  return httpClient.get<never, Category[]>(`/categories/${userId}`);
+export const getAllByUser = () => {
+  return httpClient.get<never, Category[]>(`/categories`);
 }
 
-export const addOne = (userId: string, name: string) => {
-  return httpClient.post<never, Category>(`/categories/${userId}`, { name });
+export const addOne = (name: string) => {
+  return httpClient.post<never, Category>(`/categories`, { name });
 }
 
 export const updateOne = ( id: number, name: string ) => {

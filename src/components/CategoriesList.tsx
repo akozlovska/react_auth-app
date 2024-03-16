@@ -15,7 +15,6 @@ type ItemProps = {
 
 const CategoriesItem: React.FC<ItemProps> = ({ category }) => {
   const { changeCategory, deleteCategory, getAllExpenses } = useExpense();
-  const { user } = useAuth()!;
   const [isEdit, setIsEdit] = useState(false);
   const [confirmDelete, setConfirmDelete] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -31,6 +30,7 @@ const CategoriesItem: React.FC<ItemProps> = ({ category }) => {
 
     try {
       await deleteCategory(id);
+      await getAllExpenses();
       setConfirmDelete(false);
     } catch (error) {
       setDeleteError(getErrorMessage(error));
@@ -52,7 +52,7 @@ const CategoriesItem: React.FC<ItemProps> = ({ category }) => {
 
     try {
       await changeCategory(category.id, name.trim());
-      await getAllExpenses(user!.id);
+      await getAllExpenses();
       setIsEdit(false);
     } catch (error) {
       setEditError(getErrorMessage(error));

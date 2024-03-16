@@ -14,6 +14,7 @@ import { getErrorMessage } from '../utils/getErrorMessage';
 import { usePageError } from '../hooks/usePageError';
 import { SignUpData } from '../api/services/authService';
 import { Spinner } from 'react-bootstrap';
+import SocialButtons from '../components/SocialButtons';
 
 const SignUpPage = () => {
   const {
@@ -43,7 +44,7 @@ const SignUpPage = () => {
 
   if (registered) {
     return (
-      <Alert variant="success" className="d-grid gap-2 col-lg-6 col-sm-auto m-auto">
+      <Alert variant="success" className="d-grid gap-2 col-lg-6 col-10 m-auto">
         <Alert.Heading>Activate your email</Alert.Heading>
         <p>
           You have been registered.
@@ -54,26 +55,31 @@ const SignUpPage = () => {
   }
 
   return (
-    <section className="border border-primary-subtle p-5 d-grid gap-2 col-lg-4 col-sm-auto m-auto">
-      <h1 className="mb-3 mb-sm-4">Sign up</h1>
+    <section className="border border-primary-subtle p-5 d-grid gap-2 col-xl-4 col-auto m-auto">
+      <h1 className="mb-3 mb-sm-4 text-center">Sign Up</h1>
 
-      <Form onSubmit={handleSubmit(onSignUp)}>
+      <p className="m-0 mb-3 text-muted text-center">Sign up with your social media accounts</p>
+      <SocialButtons />
+
+      <p className="m-0 mb-3 text-muted form-divider">or</p>
+
+      <Form onSubmit={handleSubmit(onSignUp)} className="mb-3">
         <Form.Group className="mb-2 mb-sm-3" controlId="username">
-          <Form.Label>Username</Form.Label>
+          <Form.Label className="visually-hidden">Username</Form.Label>
           <UsernameInput control={control} errors={errors} clearErrors={clearErrors} />
         </Form.Group>
 
         <Form.Group className="mb-2 mb-sm-3" controlId="email">
-          <Form.Label>Email</Form.Label>
+          <Form.Label className="visually-hidden">Email</Form.Label>
           <EmailInput control={control} errors={errors} clearErrors={clearErrors} />
         </Form.Group>
 
         <Form.Group className="mb-2 mb-sm-3" controlId="password">
-            <Form.Label>Password</Form.Label>
+            <Form.Label className="visually-hidden">Password</Form.Label>
             <PasswordInput control={control} errors={errors} clearErrors={clearErrors}/>
         </Form.Group>
 
-        <div className="d-grid gap-2 mb-3">
+        <div className="d-grid gap-2">
           <Button variant="primary" type="submit" disabled={isSubmitting}>
             {isSubmitting && (
               <Spinner
@@ -88,14 +94,14 @@ const SignUpPage = () => {
             Sign Up
           </Button>
         </div>
-
-        <Form.Text muted>
-          Already have an account?
-          <NavLink to="/login" className="link-primary link-underline-primary ms-1">Sign in</NavLink>
-        </Form.Text>
       </Form>
 
       {!!error && (<ErrorAlert message={error} />)}
+
+      <p className="m-0 text-muted">
+        Already have an account?
+        <NavLink to="/login" className="link-primary link-underline-primary ms-1">Sign in</NavLink>
+      </p>
     </section>
   )
 }

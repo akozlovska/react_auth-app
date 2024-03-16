@@ -25,7 +25,6 @@ type Props = {
 };
 
 const ExpenseEditForm: React.FC<Props> = ({ defaultExpense, setShow }) => {
-  const { user } = useAuth()!;
   const { changeExpense, categories, getAllCategories } = useExpense();
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitErr, setSubmitErr] = usePageError('');
@@ -66,7 +65,6 @@ const ExpenseEditForm: React.FC<Props> = ({ defaultExpense, setShow }) => {
 
     try {
       await changeExpense(defaultExpense.id, fieldsToUpdate);
-      await getAllCategories(user!.id);
       reset();
       setShow(false);
     } catch(error) {
@@ -248,7 +246,7 @@ const ExpenseEditForm: React.FC<Props> = ({ defaultExpense, setShow }) => {
           )}
         </Row>
 
-        <div className="d-flex gap-3 justify-content-end">
+        <div className="d-flex gap-3 justify-content-end align-items-center">
           <Button variant="success" type="submit" disabled={isSubmitting}>
             {isSubmitting && (
               <Spinner
@@ -260,7 +258,7 @@ const ExpenseEditForm: React.FC<Props> = ({ defaultExpense, setShow }) => {
                 className="me-3"
               />
             )}
-            Save changes
+            Save
           </Button>
           <div className="vr" />
           <Button

@@ -25,7 +25,6 @@ type Props = {
 
 const NewExpenseForm: React.FC<Props> = ({ show, setShow }) => {
   const { addExpense, categories, getAllCategories } = useExpense();
-  const { user } = useAuth()!;
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitErr, setSubmitErr] = usePageError('');
 
@@ -56,7 +55,7 @@ const NewExpenseForm: React.FC<Props> = ({ show, setShow }) => {
       return;
     }
 
-    const newExpense: Omit<ExpensePostData, 'userId'> = {
+    const newExpense: ExpensePostData = {
       title: data.title,
       amount: Number(data.amount),
       spentAt: data.spentAt,
@@ -66,8 +65,7 @@ const NewExpenseForm: React.FC<Props> = ({ show, setShow }) => {
     data.note && (newExpense.note = data.note);
 
     try {
-      await addExpense({ ...newExpense, userId: user!.id });
-      await getAllCategories(user!.id);
+      await addExpense(newExpense);
       reset();
       setShow(false);
     } catch(error) {

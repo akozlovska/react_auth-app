@@ -47,7 +47,7 @@ const PasswordResetPage = () => {
 
   if (!email) {
     return (
-      <div className="d-grid gap-2 col-lg-6 col-sm-auto m-auto">
+      <div className="d-grid gap-2 col-lg-6 col-10 m-auto">
         <Alert variant="danger" className="text-center">
           <Alert.Heading>Not authorized</Alert.Heading>
           <p>You have not confirmed your email</p>
@@ -58,7 +58,7 @@ const PasswordResetPage = () => {
 
   if (isSubmitted) {
     return (
-      <div className="d-grid gap-2 col-lg-6 col-sm-auto m-auto">
+      <div className="d-grid gap-2 col-lg-6 col-10 m-auto">
         <Alert variant="success" className="text-center">
           <Alert.Heading>Successful password reset</Alert.Heading>
           <p>You have successfully reset your password.</p>
@@ -71,8 +71,8 @@ const PasswordResetPage = () => {
   }
 
   return (
-    <section className="border border-primary-subtle p-5 d-grid gap-2 col-lg-6 col-sm-auto m-auto">
-      <h1 className="mb-3 mb-sm-4">Change password</h1>
+    <section className="border border-primary-subtle p-5 d-grid gap-2 col-lg-6 col-10 m-auto">
+      <h1 className="mb-3 mb-sm-4 text-center">Change password</h1>
 
       <Form onSubmit={handleSubmit(onSubmit)}>
         <Form.Group className="mb-2 mb-sm-3" controlId="password">

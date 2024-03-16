@@ -8,7 +8,7 @@ httpClient.interceptors.request.use(onRequest);
 httpClient.interceptors.response.use(onResponseSuccess, onResponseError);
 
 function onRequest(req: InternalAxiosRequestConfig) {
-  const accessToken = sessionStorage.getItem('accessToken');
+  const accessToken = localStorage.getItem('accessToken');
 
   if (accessToken) {
     req.headers['Authorization'] = `Bearer ${accessToken}`;
@@ -31,7 +31,7 @@ async function onResponseError(error: AxiosError) {
 
   try {
     const { accessToken } = await authService.refresh();
-    sessionStorage.setItem('accessToken', accessToken);
+    localStorage.setItem('accessToken', accessToken);
 
     return httpClient.request(originalRequest);
   } catch (error) {

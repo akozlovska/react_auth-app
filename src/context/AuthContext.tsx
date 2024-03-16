@@ -12,10 +12,13 @@ type AuthContextType = {
   confirmReset: (token: string, id: string) => Promise<string>;
   resetPassword: (newPassword: string, email: string) => Promise<void>;
   changeUsername: (newUsername: string) => Promise<void>;
-  requestEmailChange: (password: string, newEmail: string) => Promise<void>;
+  requestEmailChange: (password: string | undefined, newEmail: string) => Promise<void>;
   changeEmail: (token: string, id: string, newEmail: string) => Promise<void>;
   changePassword: (oldPassword: string, newPassword: string) => Promise<void>;
   logout: () => Promise<void>;
+  deleteUser: () => Promise<void>;
+  getUserInfo: () => Promise<void>;
+  deleteSocialAccount: (type: 'google' | 'github') => Promise<void>;
 }
 
 const AuthContext = React.createContext<AuthContextType>({} as AuthContextType);
@@ -31,18 +34,18 @@ export const AuthProvider: React.FC<Props> = ({ children }) => {
   const activate = async(token: string, id: string) => {
     const { user, accessToken } = await authService.activate(token, id);
     setUser(user);
-    sessionStorage.setItem('accessToken', accessToken);
+    localStorage.setItem('accessToken', accessToken);
   }
 
   const signIn = async({ email, password }: SignInData) => {
     const { user, accessToken } = await authService.signIn({ email, password });
     setUser(user);
-    sessionStorage.setItem('accessToken', accessToken);
+    localStorage.setItem('accessToken', accessToken);
   }
 
   const confirmReset = async(token: string, id: string) => {
     const { email } = await authService.confirmReset(token, id);
-    
+
     return email;
   }
 
@@ -51,42 +54,52 @@ export const AuthProvider: React.FC<Props> = ({ children }) => {
   }
 
   const changeUsername = async(newUsername: string) => {
-    if (!user) {
-      throw new Error('Unauthorized');
-    }
-
-    const updatedUser = await userService.changeUsername({ userId: user?.id, newUsername })
+    const updatedUser = await userService.changeUsername(newUsername)
     setUser(updatedUser);
   }
 
-  const requestEmailChange = async(password: string, newEmail: string) => {
-    if (!user) {
-      throw new Error('Unauthorized');
+  const requestEmailChange = async(password: string | undefined, newEmail: string) => {
+    if (user) {
+      if (password) {
+        await userService.requestEmailChange({ password, oldEmail: user.email, newEmail });
+      } else {
+        await userService.requestEmailChange({ oldEmail: user.email, newEmail });
+      }
     }
-
-    await userService.requestEmailChange({ password, oldEmail: user.email, newEmail });
   }
 
   const changeEmail = async(token: string, id: string, newEmail: string) => {
     const { user, accessToken } = await authService.confirmEmailChange(token, id);
     setUser(user);
-    sessionStorage.setItem('accessToken', accessToken);
+    localStorage.setItem('accessToken', accessToken);
 
-    const updatedUser = await userService.changeEmail(user.id, newEmail);
+    const updatedUser = await userService.changeEmail(newEmail);
     setUser(updatedUser);
   }
 
   const changePassword = async(oldPassword: string, newPassword: string) => {
-    if (!user) {
-      throw new Error('Unauthorized');
-    }
-
-    await userService.changePassword({ userId: user.id, oldPassword, newPassword });
+    await userService.changePassword({ oldPassword, newPassword });
   }
 
   const logout = async() => {
     await authService.logout();
     setUser(null);
+  }
+
+  const deleteUser = async() => {
+    await userService.deleteUser();
+    setUser(null);
+  }
+
+  const getUserInfo = async() => {
+    const user = await userService.getUserInfo();
+    setUser(user);
+  }
+
+  const deleteSocialAccount = async(type: 'google' | 'github') => {
+    await userService.deleteSocialAccount(type);
+
+    await getUserInfo();
   }
 
   const value = {
@@ -101,6 +114,9 @@ export const AuthProvider: React.FC<Props> = ({ children }) => {
     changeEmail,
     changePassword,
     logout,
+    deleteUser,
+    getUserInfo,
+    deleteSocialAccount,
   }
 
   return (

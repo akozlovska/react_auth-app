@@ -98,11 +98,11 @@ export const ExpenseCategoryFilter = () => {
   }
 
   return (
-    <aside className="ms-5 p-3">
-      <h5>Filter by</h5>
+    <aside className="d-flex d-sm-block ms-sm-5 pb-3 p-sm-3">
+      <h5 className="me-3 flex-shrink-0">Filter by</h5>
       <hr />
-      <h6>Categories</h6>
-      <Form onSubmit={e => e.preventDefault()}>
+      <h6 className="d-none d-sm-block">Categories</h6>
+      <Form onSubmit={e => e.preventDefault()} className="overflow-x-scroll overflow-x-sm-auto">
         {categories.map(category => (
           <Form.Check
             key={category.id}
@@ -112,6 +112,7 @@ export const ExpenseCategoryFilter = () => {
             id={category.name}
             onChange={handleFiltersChange}
             checked={filters.includes(category.name)}
+            className="d-inline-block d-sm-block me-3"
           />
         ))}
       </Form>

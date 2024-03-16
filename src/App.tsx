@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import Container from 'react-bootstrap/Container';
 import Nav from 'react-bootstrap/Nav';
 import Navbar from 'react-bootstrap/Navbar';
@@ -8,10 +8,11 @@ import { useAuth } from './context/AuthContext';
 import ErrorAlert from './components/ErrorAlert';
 import { getErrorMessage } from './utils/getErrorMessage';
 import './App.scss';
+import { usePageError } from './hooks/usePageError';
 
 function App() {
   const { isAuthorized, logout } = useAuth();
-  const [logoutError, setLogoutError] = useState('');
+  const [logoutError, setLogoutError] = usePageError('');
 
   const navigate = useNavigate();
   const location = useLocation();
@@ -29,7 +30,7 @@ function App() {
 
   return (
     <div className="App">
-      <header className="position-sticky top-0 start-0 end-0">
+      <header className="position-sticky top-0 start-0 end-0 z-3">
         <Navbar expand="md" bg="primary" data-bs-theme="dark">
           <Container>
             <Navbar.Brand as={NavLink} to="/">
@@ -57,7 +58,7 @@ function App() {
         </Navbar>
 
         {location.pathname.startsWith('/profile') && (
-          <Navbar expand="md" bg="primary-subtle"className="py-0">
+          <Navbar expand="md" bg="primary-subtle" className="py-0">
             <Container>
               <Nav className="me-auto flex-row gap-3">
                 <Nav.Link as={NavLink} to="profile/expenses">Expenses</Nav.Link>

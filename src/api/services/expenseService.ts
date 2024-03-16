@@ -2,7 +2,6 @@ import { Expense } from "../../types/Expense";
 import { httpClient } from "../httpClient"
 
 export interface ExpensePostData {
-  userId: string,
   title: string,
   amount: number,
   spentAt: string,
@@ -18,8 +17,8 @@ export interface ExpensePatchData {
   category?: string,
 };
 
-export const getAll = (userId: string) => {
-  return httpClient.get<never, Expense[]>(`/expenses/${userId}`);
+export const getAll = () => {
+  return httpClient.get<never, Expense[]>(`/expenses`);
 }
 
 export const addOne = ( newExpense: ExpensePostData ) => {

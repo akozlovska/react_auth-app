@@ -10,7 +10,6 @@ import { getErrorMessage } from '../utils/getErrorMessage';
 
 const CategoriesPage = () => {
   const { categories, addCategory } = useExpense();
-  const { user } = useAuth()!;
 
   const [isAdd, setIsAdd] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -29,7 +28,7 @@ const CategoriesPage = () => {
     setIsSubmitting(true);
 
     try {
-      await addCategory(user!.id, name.trim());
+      await addCategory(name.trim());
       setIsAdd(false);
       reset();
     } catch (error) {
